@@ -2,7 +2,7 @@
 /**
  * PHP: Halaman Info Loker (Lowongan Kerja)
  * Menampilkan daftar lowongan pekerjaan yang tersedia di EDUCENTER.
- * Data lowongan dikelola melalui array PHP sehingga mudah diperbarui.
+ * Data lowongan diambil dari database MySQL (tabel loker).
  */
 
 $current_page = 'loker';
@@ -11,68 +11,51 @@ $page_title   = 'Info Loker – EDUCENTER';
 include 'includes/header.php';
 include 'includes/navbar.php';
 
-/**
- * PHP: Data lowongan kerja disimpan dalam array asosiatif.
- * Dalam pengembangan lebih lanjut, data ini bisa diambil dari database MySQL.
- * Format: status 'open' = masih menerima, 'close' = sudah ditutup.
- */
-$lowongan = [
-  [
-    'posisi'    => 'Guru Preschool / PAUD',
-    'tipe'      => 'Full-Time',
-    'lokasi'    => 'On-site',
-    'gaji'      => 'Nego',
-    'status'    => 'open',
-    'deadline'  => '30 Mei 2025',
-    'icon'      => '👩‍🏫',
-    'deskripsi' => 'Kami mencari guru PAUD yang berdedikasi, kreatif, dan mencintai anak-anak untuk bergabung dalam tim pengajar SS Preschool kami.',
-    'kualifikasi' => ['Minimal D3/S1 PAUD atau keguruan', 'Berpengalaman min. 1 tahun mengajar anak usia dini', 'Sabar, kreatif, dan berkomunikasi baik', 'Bersedia mengikuti pelatihan internal'],
-  ],
-  [
-    'posisi'    => 'Tentor Private (Semua Mapel)',
-    'tipe'      => 'Part-Time / Freelance',
-    'lokasi'    => 'On-site / Online',
-    'gaji'      => 'Per Sesi',
-    'status'    => 'open',
-    'deadline'  => '15 Juni 2025',
-    'icon'      => '📖',
-    'deskripsi' => 'Dibutuhkan tentor private untuk berbagai mata pelajaran SD, SMP, dan SMA. Jadwal fleksibel dan bisa online maupun tatap muka.',
-    'kualifikasi' => ['Mahasiswa aktif atau lulusan S1 semua jurusan', 'Menguasai minimal satu bidang studi', 'Komunikatif dan sabar dalam mengajar', 'Memiliki kendaraan pribadi (untuk on-site)'],
-  ],
-  [
-    'posisi'    => 'Pengajar Bimba (Bimbingan Membaca)',
-    'tipe'      => 'Part-Time',
-    'lokasi'    => 'On-site',
-    'gaji'      => 'Kompetitif',
-    'status'    => 'open',
-    'deadline'  => '20 Mei 2025',
-    'icon'      => '🔤',
-    'deskripsi' => 'Dibutuhkan pengajar khusus bimbingan membaca untuk anak usia 3–7 tahun. Akan diberikan pelatihan metode Bimba secara lengkap.',
-    'kualifikasi' => ['Minimal SMA/SMK sederajat', 'Menyukai anak-anak usia dini', 'Sabar dan kreatif', 'Diutamakan berpengalaman di bidang PAUD'],
-  ],
-  [
-    'posisi'    => 'Admin & Keuangan',
-    'tipe'      => 'Full-Time',
-    'lokasi'    => 'On-site',
-    'gaji'      => 'Nego',
-    'status'    => 'open',
-    'deadline'  => '1 Juni 2025',
-    'icon'      => '💼',
-    'deskripsi' => 'Kami membutuhkan staf administrasi dan keuangan yang teliti, ramah, dan mampu bekerja secara multitasking di lingkungan pendidikan.',
-    'kualifikasi' => ['D3/S1 Akuntansi, Manajemen, atau Administrasi', 'Menguasai Microsoft Office (Word, Excel)', 'Teliti, rapi, dan bertanggung jawab', 'Pengalaman di lembaga pendidikan menjadi nilai plus'],
-  ],
-  [
-    'posisi'    => 'Desainer Grafis & Media Sosial',
-    'tipe'      => 'Part-Time / Remote',
-    'lokasi'    => 'Remote',
-    'gaji'      => 'Per Proyek',
-    'status'    => 'close',
-    'deadline'  => '30 April 2025',
-    'icon'      => '🎨',
-    'deskripsi' => 'Posisi ini sudah ditutup. Pantau terus halaman ini untuk info lowongan terbaru dari EDUCENTER.',
-    'kualifikasi' => ['S1 Desain Komunikasi Visual atau sederajat', 'Menguasai Adobe Photoshop, Illustrator, atau Canva Pro', 'Portofolio desain yang menarik'],
-  ],
-];
+// ── Koneksi Database ───────────────────────────────────────────────────────
+$db_host = 'localhost';
+$db_name = 'educenter_db';
+$db_user = 'root';
+$db_pass = '';
+
+try {
+    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Ambil data loker dari database, urutkan berdasarkan created_at DESC
+    $stmt = $pdo->query("SELECT * FROM loker ORDER BY created_at DESC");
+    $lokerData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Format data untuk view
+    $lowongan = [];
+    foreach ($lokerData as $row) {
+        $lowongan[] = [
+            'posisi'     => $row['posisi'],
+            'tipe'       => $row['tipe'],
+            'lokasi'     => $row['lokasi'],
+            'gaji'       => $row['gaji'],
+            'status'     => $row['status'],
+            'deadline'   => date('d M Y', strtotime($row['deadline'])),
+            'icon'       => $row['icon'],
+            'deskripsi'  => $row['deskripsi'],
+            'kualifikasi' => json_decode($row['kualifikasi'], true) ?? [],
+        ];
+    }
+} catch (PDOException $e) {
+    // Jika database tidak tersedia, fallback ke data statis
+    $lowongan = [
+        [
+            'posisi'    => 'Guru Preschool / PAUD',
+            'tipe'      => 'Full-Time',
+            'lokasi'    => 'On-site',
+            'gaji'      => 'Nego',
+            'status'    => 'open',
+            'deadline'  => '30 Mei 2025',
+            'icon'      => '👩‍🏫',
+            'deskripsi' => 'Data lowongan sementara tidak tersedia. Hubungi administrator.',
+            'kualifikasi' => [],
+        ],
+    ];
+}
 ?>
 
 <!-- Page Hero -->
