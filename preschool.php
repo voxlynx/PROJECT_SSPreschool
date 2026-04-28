@@ -103,7 +103,7 @@ include 'includes/navbar.php';
       <h2>Daftarkan Si Kecil Sekarang!</h2>
       <p>Tempat terbatas! Hubungi kami sekarang dan dapatkan informasi lengkap tentang pendaftaran SS Preschool.</p>
       <div class="cta-buttons">
-        <a href="https://wa.me/6285171660808" class="btn btn-white">💬 Chat WhatsApp</a>
+        <a href="https://wa.me/6281234567890" class="btn btn-white">💬 Chat WhatsApp</a>
         <a href="index.php" class="btn btn-outline-white">← Kembali ke Home</a>
       </div>
     </div>

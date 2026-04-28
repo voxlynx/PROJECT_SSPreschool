@@ -43,7 +43,7 @@
         <ul class="footer-contact">
           <li><span>📍</span>  JL.	AL	MUBAROK	III	NO.68,	Desa/Kelurahan	Joglo,	Kec.	Kembangan,
 Kota	Adm.	Jakarta	Barat,	Provinsi	DKI	Jakarta</li>
-          <li><span>📞</span> (+62) 851-7166-0808</li>
+          <li><span>📞</span> (+62)  851-7166-0808</li>
           <li><span>✉️</span> rithie.sspreschool@gmail.com</li>
           <li><span>🕐</span> Senin–Sabtu, 08.00–17.00</li>
         </ul>

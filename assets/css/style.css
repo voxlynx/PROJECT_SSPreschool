@@ -224,7 +224,10 @@ ul { list-style: none; }
 .nav-overlay {
   display: none;
   position: fixed;
-  top: 72px; left: 0; right: 0; bottom: 0;
+  top: 72px;   /* Mulai di bawah navbar, tidak menutupi header */
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(30,58,95,0.4);
   backdrop-filter: blur(3px);
   z-index: 998;
@@ -1166,18 +1169,19 @@ ul { list-style: none; }
 
   .nav-links {
     position: fixed;
-    top: 72px;
+    top: 72px;        /* Tepat di bawah navbar (tinggi navbar = 72px) */
     right: -100%;
     bottom: 0;
     width: min(300px, 85vw);
     background: var(--white);
     flex-direction: column;
     align-items: flex-start;
-    padding: 16px 24px 40px;
+    padding: 16px 24px 40px;  /* Padding atas kecil, menu langsung terlihat */
     gap: 8px;
     z-index: 999;
     box-shadow: -8px 0 32px rgba(0,0,0,0.15);
     transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 1px solid rgba(66, 122, 181, 0.12); /* Garis pemisah tipis */
   }
 
   .nav-links.open { right: 0; }
