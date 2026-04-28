@@ -28,33 +28,26 @@ try {
     // Format data untuk view
     $lowongan = [];
     foreach ($lokerData as $row) {
-        $lowongan[] = [
-            'posisi'     => $row['posisi'],
-            'tipe'       => $row['tipe'],
-            'lokasi'     => $row['lokasi'],
-            'gaji'       => $row['gaji'],
-            'status'     => $row['status'],
-            'deadline'   => date('d M Y', strtotime($row['deadline'])),
-            'icon'       => $row['icon'],
-            'deskripsi'  => $row['deskripsi'],
-            'kualifikasi' => json_decode($row['kualifikasi'], true) ?? [],
-        ];
+      $kualifikasi = json_decode($row['kualifikasi'], true);
+      if (!is_array($kualifikasi)) {
+        $kualifikasi = [];
+      }
+      $lowongan[] = [
+        'posisi'     => $row['posisi'],
+        'tipe'       => $row['tipe'],
+        'lokasi'     => $row['lokasi'],
+        'gaji'       => $row['gaji'],
+        'status'     => $row['status'],
+        'deadline'   => date('d M Y', strtotime($row['deadline'])),
+        'icon'       => $row['icon'],
+        'deskripsi'  => $row['deskripsi'],
+        'kualifikasi' => $kualifikasi,
+      ];
     }
 } catch (PDOException $e) {
-    // Jika database tidak tersedia, fallback ke data statis
-    $lowongan = [
-        [
-            'posisi'    => 'Guru Preschool / PAUD',
-            'tipe'      => 'Full-Time',
-            'lokasi'    => 'On-site',
-            'gaji'      => 'Nego',
-            'status'    => 'open',
-            'deadline'  => '30 Mei 2025',
-            'icon'      => '👩‍🏫',
-            'deskripsi' => 'Data lowongan sementara tidak tersedia. Hubungi administrator.',
-            'kualifikasi' => [],
-        ],
-    ];
+  // Jika database tidak tersedia, fallback ke data statis
+  $lowongan = [];
+  echo '<div style="color:#c00; text-align:center; margin-top:16px; font-weight:bold;">Koneksi database gagal: ' . htmlspecialchars($e->getMessage()) . '</div>';
 }
 ?>
 
@@ -72,24 +65,32 @@ try {
     <!-- Statistik Singkat -->
     <div class="hero-stats" style="margin: 0 auto 48px; justify-content: center;">
       <?php
-        $open  = count(array_filter($lowongan, fn($l) => $l['status'] === 'open'));
-        $close = count(array_filter($lowongan, fn($l) => $l['status'] === 'close'));
+        $open  = 0;
+        $close = 0;
+        foreach ($lowongan as $l) {
+            if (isset($l['status']) && $l['status'] === 'open') $open++;
+            if (isset($l['status']) && $l['status'] === 'close') $close++;
+        }
+        $total = count($lowongan);
       ?>
       <div class="stat-item">
-        <span class="stat-number" style="color: #1a7a1a;"><?php echo $open; ?></span>
+          <span class="stat-number" style="color: #1a7a1a;" data-target="<?php echo (int)$open; ?>"><?php echo (int)$open; ?></span>
         <span class="stat-label">Lowongan Aktif</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <span class="stat-number"><?php echo count($lowongan); ?></span>
+          <span class="stat-number" data-target="<?php echo (int)$total; ?>"><?php echo (int)$total; ?></span>
         <span class="stat-label">Total Posisi</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <span class="stat-number"><?php echo $close; ?></span>
+          <span class="stat-number" data-target="<?php echo (int)$close; ?>"><?php echo (int)$close; ?></span>
         <span class="stat-label">Sudah Ditutup</span>
       </div>
     </div>
+    <?php if ($total === 0): ?>
+      <div style="color:#c00; text-align:center; margin-top:16px; font-weight:bold;">Data lowongan tidak ditemukan. Pastikan tabel <b>loker</b> di database <b>educenter_db</b> sudah terisi!</div>
+    <?php endif; ?>
 
     <!-- Daftar Lowongan -->
     <div class="section-header">
