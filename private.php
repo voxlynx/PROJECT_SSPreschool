@@ -84,7 +84,7 @@ include 'includes/navbar.php';
       <h2>Mulai Private Class Hari Ini!</h2>
       <p>Jadwal fleksibel, guru berpengalaman, dan materi disesuaikan. Hubungi kami sekarang untuk konsultasi gratis.</p>
       <div class="cta-buttons">
-        <a href="https://wa.me/6285171660808" class="btn btn-white">💬 Daftar via WhatsApp</a>
+        <a href="https://wa.me/6281234567890" class="btn btn-white">💬 Daftar via WhatsApp</a>
         <a href="index.php" class="btn btn-outline-white">← Kembali ke Home</a>
       </div>
     </div>

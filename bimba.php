@@ -84,7 +84,7 @@ include 'includes/navbar.php';
       <h2>Si Kecil Siap Jadi Pembaca Cilik?</h2>
       <p>Hubungi kami sekarang dan daftarkan anak Anda ke program Bimba terbaik yang menyenangkan dan terbukti berhasil!</p>
       <div class="cta-buttons">
-        <a href="https://wa.me/6285171660808" class="btn btn-white">💬 Daftar via WhatsApp</a>
+        <a href="https://wa.me/6281234567890" class="btn btn-white">💬 Daftar via WhatsApp</a>
         <a href="index.php" class="btn btn-outline-white">← Kembali ke Home</a>
       </div>
     </div>
